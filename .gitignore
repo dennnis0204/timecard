@@ -1,0 +1,16 @@
+*.pyc
+*~
+__pycache__
+db.sqlite3
+.vscode
+npm-debug.log
+/node_modules
+/react/src
+/static/sass
+.babelrc
+*.json
+*.hot-update.js
+webpack.config.js
+Pipfile
+Pipfile.lock
+README.md
