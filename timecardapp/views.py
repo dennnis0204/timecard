@@ -190,7 +190,7 @@ class IndexView(ListView):
             user = self.request.user
             obj = Settings.objects.all().filter(user=user)
             if (not obj):
-                obj = Settings(user=user, break_type="noBreak", break_duration=15, round_time=15)
+                obj = Settings(user=user, break_type="noBreak", break_duration=15, round_time=15, calculate_overtime=true, overtime_hours=8, overtimeMinutes=0)
                 obj.save()
                 obj = Settings.objects.all().filter(user=user)
                 print('new_obj=', obj)
@@ -200,7 +200,7 @@ class IndexView(ListView):
                 rate_exist = False
             else:
                 rate_exist = True
-            response_data = 0
+
             response_data = {
                 'preferences': {
                     'break': {
@@ -208,6 +208,11 @@ class IndexView(ListView):
                         'breakDuration': preferences.data[0].get("break_duration")
                     },
                     'roundTime': preferences.data[0].get("round_time"),
+                    'overtime': {
+                        'calculateOvertime': preferences.data[0].get("calculate_overtime", true),
+                        'overtimeHours': preferences.data[0].get("overtime_hours", 33),
+                        'overtimeMinutes': preferences.data[0].get("overtime_minutes", 44),
+                    },
                     'rateExist': rate_exist
                 }
             }
@@ -233,6 +238,9 @@ class Preferences(ListView):
             return JsonResponse(self.get_preferences(), safe=False)
         if ('round_time_load' in form):
             print('round_time_load')
+            return JsonResponse(self.get_preferences(), safe=False)
+        if ('overtime_load' in form):
+            print('overtime_load')
             return JsonResponse(self.get_preferences(), safe=False)
         if ('break_change' in form):
             if self.request.user.is_authenticated:
@@ -260,6 +268,22 @@ class Preferences(ListView):
                     obj.save()
                 except (KeyError, Settings.DoesNotExist):
                     new_obj = Settings(round_time=round_time, user=user)
+                    new_obj.save()
+                return JsonResponse(self.get_preferences(), safe=False)
+        if ('overtime_change' in form):
+            if self.request.user.is_authenticated:
+                user = self.request.user
+                calculate_overtime = convert_trueTrue_falseFalse(form.get('calculate_overtime', True))
+                overtime_hours = form.get('overtime_hours', 8)
+                overtime_minutes = form.get('overtime_minutes', 0)
+                try:
+                    obj = Settings.objects.all().get(user=user)
+                    obj.calculate_overtime = calculate_overtime
+                    obj.overtime_hours = overtime_hours
+                    obj.overtime_minutes = overtime_minutes
+                    obj.save()
+                except (KeyError, Settings.DoesNotExist):
+                    new_obj = Settings(calculate_overtime=calculate_overtime, overtime_hours=overtime_hours, overtime_minutes=overtime_minutes)
                     new_obj.save()
                 return JsonResponse(self.get_preferences(), safe=False)
         
@@ -359,18 +383,36 @@ class Preferences(ListView):
     def get_preferences(self):
         if self.request.user.is_authenticated:
             user = self.request.user
-            obj = Settings.objects.all().filter(user = user)
+            obj = Settings.objects.all().filter(user=user)
+            if (not obj):
+                obj = Settings(user=user, break_type="noBreak", break_duration=15, round_time=15, calculate_overtime=True, overtime_hours=8, overtime_minutes=0)
+                obj.save()
+                obj = Settings.objects.all().filter(user=user)
+                print('new_obj=', obj)
             preferences = SettingsSerializer(obj, many=True)
+            obj2 = Wages.objects.all().filter(user=user)
+            if (not obj2):
+                rate_exist = False
+            else:
+                rate_exist = True
+
+            print(preferences.data)
+
             response_data = {
                 'preferences': {
                     'break': {
-                        'breakType': preferences.data[0].get("break_type"),
+                        'breakType': preferences.data[0].get("break_type", "noBreak"),
                         'breakDuration': preferences.data[0].get("break_duration")
                     },
-                    'roundTime': preferences.data[0].get("round_time")
+                    'roundTime': preferences.data[0].get("round_time"),
+                    'overtime': {
+                        'calculateOvertime': preferences.data[0].get("calculate_overtime", True),
+                        'overtimeHours': preferences.data[0].get("overtime_hours", 33),
+                        'overtimeMinutes': preferences.data[0].get("overtime_minutes", 44),
+                    },
+                    'rateExist': rate_exist
                 }
             }
-            print('ddfds', response_data)
             return response_data
         else:
             return None
@@ -384,5 +426,14 @@ class PrivacyPolish(TemplateView):
 
 class PrivacyRussian(TemplateView):
     template_name = 'timecardapp/privacy_ru.html'
+
+
+def convert_trueTrue_falseFalse(input):
+    if input.lower() == 'false' or input == False:
+        return False
+    elif input.lower() == 'true' or input == True:
+        return True
+    else:
+        raise ValueError("...")
     
     

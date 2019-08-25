@@ -31,6 +31,9 @@ class Settings(models.Model):
     break_type = models.TextField(max_length=20)
     break_duration = models.IntegerField(default=0)
     round_time = models.IntegerField(default=15)
+    calculate_overtime = models.BooleanField(default=False)
+    overtime_hours = models.IntegerField(default=8)
+    overtime_minutes = models.IntegerField(default=0)
     user = models.ForeignKey(User, default=1, on_delete=models.CASCADE)
     def __str__(self):
         return str(self.break_type)

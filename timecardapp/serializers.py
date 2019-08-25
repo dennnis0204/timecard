@@ -47,3 +47,6 @@ class SettingsSerializer(serpy.Serializer):
     break_type = serpy.StrField()
     break_duration = serpy.IntField()
     round_time = serpy.IntField()
+    calculate_overtime = serpy.BoolField()
+    overtime_hours = serpy.IntField()
+    overtime_minutes = serpy.IntField()
