@@ -21,29 +21,37 @@ class IndexView(ListView):
         year, month = self.get_year_month()
         month_pay = 0
         overtime = 0
-        weekend = 0
         total_time = 0
+
         time_at_work = datetime.combine(date.min, time.min)
-        # print('time_at_work', time_at_work)
+        weekend = datetime.combine(date.min, time.min)
 
         objs = TimeCards.objects.all().filter(user=user, entry_date__month=month, entry_date__year=year)
         for obj in objs:
             entry_date = obj.entry_date
-            # print('entry_date', entry_date)
-            duration = datetime.combine(date.min, obj.time_out) - datetime.combine(date.min, obj.time_in)
-            # print('duration', duration)
-            # for night shift, example 22:00 - 06:00
-            if (obj.time_out < obj.time_in):
-                duration += timedelta(days = 1)
-            month_pay += obj.pay
             week_day = calendar.weekday(entry_date.year, entry_date.month, entry_date.day)
-            time_at_work += duration
-            if (duration.seconds//3600 > 8):
-                overtime += duration.seconds//3600 - 8
+
+            one_day_total_time = datetime.combine(date.min, obj.total_time)
+            time_at_work = time_at_work + timedelta(seconds=(one_day_total_time.hour*3600 + one_day_total_time.minute*60))
+
             if (week_day == 5 or week_day == 6):
-                weekend = time_at_work.day * 24 + time_at_work.hour - 24
-        total_time = time_at_work.day * 24 + time_at_work.hour - 24
-        return month_pay, overtime, weekend, total_time
+                weekend = weekend + timedelta(seconds=(one_day_total_time.hour*3600 + one_day_total_time.minute*60))
+                print("week_day", week_day, weekend)
+
+            # if (duration.seconds//3600 > 8):
+            #     overtime += duration.seconds//3600 - 8
+
+            month_pay += obj.pay
+
+        total_time_hour = (time_at_work.day - 1) * 24 + time_at_work.hour
+        total_time_minute = time_at_work.minute
+        weekend_hour = (weekend.day - 1) * 24 + weekend.hour
+        weekend_minute = weekend.minute
+
+        return total_time_hour, total_time_minute, overtime, weekend_hour, weekend_minute, month_pay
+    
+    # def days_hours_minutes(td):
+    #     return td.days, td.seconds//3600, (td.seconds//60)%60
 
     def get_template_names(self):
         if self.request.user.is_authenticated:
@@ -62,14 +70,16 @@ class IndexView(ListView):
         if self.request.user.is_authenticated:
             user = self.request.user
             year, month = self.get_year_month()
-            month_pay, overtime, weekend, total_time = self.estimation()
+            total_time_hour, total_time_minute, overtime, weekend_hour, weekend_minute, month_pay = self.estimation()
             obj = TimeCards.objects.all().filter(entry_date__year = year, entry_date__month = month, user = user)
             table_data = TimeCardsSerializer(obj, many=True)
             response_data = {
-                'monthPay': month_pay,
+                'totalTimeHour': total_time_hour,
+                'totalTimeMinute': total_time_minute,
                 'overtime': overtime,
-                'weekend': weekend,
-                'totalTime': total_time,
+                'weekendHour': weekend_hour,
+                'weekendMinute': weekend_minute,
+                'monthPay': month_pay,
                 'tableData': table_data.data
             }
             return response_data
@@ -96,12 +106,14 @@ class IndexView(ListView):
                 'next_month': next_month,
             })
 
-            month_pay, overtime, weekend, total_time = self.estimation()
+            total_time_hour, total_time_minute, overtime, weekend_hour, weekend_minute, month_pay = self.estimation()
             context.update({
-                'month_pay': month_pay,
+                'totalTimeHour': total_time_hour,
+                'totalTimeMinute': total_time_minute,
                 'overtime': overtime,
-                'weekend': weekend,
-                'total_time': total_time
+                'weekendHour': weekend_hour,
+                'weekendMinute': weekend_minute,
+                'monthPay': month_pay,
             })
 
             context['table_data'] = self.get_json()
@@ -141,6 +153,7 @@ class IndexView(ListView):
             break_time = time(int(form.get('break_hour', 0)), int(form.get('break_minute', 0)))
             duration = datetime.combine(date.min, time_out) - datetime.combine(date.min, time_in)
 
+            # for night shift, example 22:00 - 06:00
             if (time_out < time_in):
                 duration += timedelta(days = 1)
 
@@ -155,7 +168,7 @@ class IndexView(ListView):
                 response = {'redirectUrl': '/preferences'}
                 return JsonResponse(response)
             actual_wage = closest_date.wage
-            pay = round(time_at_work_decimal * actual_wage)
+            pay = round(time_at_work_decimal * actual_wage, 2)
 
 
             try:
@@ -177,7 +190,7 @@ class IndexView(ListView):
             user = self.request.user
             obj = Settings.objects.all().filter(user=user)
             if (not obj):
-                obj = Settings(user=user, break_type="noBreak", break_duration=0, round_time=15)
+                obj = Settings(user=user, break_type="noBreak", break_duration=15, round_time=15)
                 obj.save()
                 obj = Settings.objects.all().filter(user=user)
                 print('new_obj=', obj)
@@ -225,7 +238,7 @@ class Preferences(ListView):
             if self.request.user.is_authenticated:
                 user = self.request.user
                 break_type = (form.get('break_type', 'noBreak'))
-                break_duration = (form.get('break_duration', 0))
+                break_duration = (form.get('break_duration', 15))
                 print('break_duration', break_duration)
                 try:
                     obj = Settings.objects.all().get(user=user)
@@ -281,8 +294,10 @@ class Preferences(ListView):
                 # update pay fields -----------------------------------------------#
                 card_obj = TimeCards.objects.all().filter(user=user).filter(entry_date__gte=new_wage_obj.increase_date).filter(entry_date__lte=new_wage_obj.last_date)
                 for obj in card_obj:
-                    time_at_work_decimal = obj.total_time.hour + obj.total_time.minute / 24
-                    obj.pay = round(time_at_work_decimal * new_wage_obj.wage)
+                    time_at_work_decimal = obj.total_time.hour + obj.total_time.minute / 60
+                    
+                    obj.pay = round(time_at_work_decimal * new_wage_obj.wage, 2)
+                    print(obj.total_time.hour, obj.total_time.minute, time_at_work_decimal, obj.pay)
                     obj.save()
                 #------------------------------------------------------------------#
 
@@ -355,6 +370,7 @@ class Preferences(ListView):
                     'roundTime': preferences.data[0].get("round_time")
                 }
             }
+            print('ddfds', response_data)
             return response_data
         else:
             return None
