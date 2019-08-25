@@ -190,7 +190,7 @@ class IndexView(ListView):
             user = self.request.user
             obj = Settings.objects.all().filter(user=user)
             if (not obj):
-                obj = Settings(user=user, break_type="noBreak", break_duration=15, round_time=15, calculate_overtime=true, overtime_hours=8, overtimeMinutes=0)
+                obj = Settings(user=user, break_type="noBreak", break_duration=15, round_time=15, calculate_overtime=True, overtime_hours=8, overtime_minutes=0)
                 obj.save()
                 obj = Settings.objects.all().filter(user=user)
                 print('new_obj=', obj)
@@ -209,7 +209,7 @@ class IndexView(ListView):
                     },
                     'roundTime': preferences.data[0].get("round_time"),
                     'overtime': {
-                        'calculateOvertime': preferences.data[0].get("calculate_overtime", true),
+                        'calculateOvertime': preferences.data[0].get("calculate_overtime", True),
                         'overtimeHours': preferences.data[0].get("overtime_hours", 33),
                         'overtimeMinutes': preferences.data[0].get("overtime_minutes", 44),
                     },
