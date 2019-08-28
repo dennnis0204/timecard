@@ -276,6 +276,9 @@ body {
   height: 3rem;
   display: flex;
   justify-content: space-around; }
+  @media only screen and (max-width: 47em) {
+    .month-picker {
+      width: 100%; } }
   .month-picker__item {
     display: flex;
     align-items: center; }
@@ -302,6 +305,9 @@ body {
   .month-picker__number {
     font-size: 1.4rem;
     font-weight: 300; }
+    @media only screen and (max-width: 47em) {
+      .month-picker__number {
+        display: none; } }
 
 .button {
   padding: 1rem 2rem 1rem 2rem;
@@ -710,7 +716,7 @@ body {
 .wage-date {
   position: relative;
   display: grid;
-  grid-template-columns: 5rem 15rem 5rem 16rem 24rem;
+  grid-template-columns: 5rem 12rem 5rem 16rem 22rem;
   grid-template-rows: 12rem;
   justify-content: center;
   place-items: center;
@@ -1151,8 +1157,10 @@ body {
     .sure-message {
       width: 30rem;
       top: -7rem;
-      left: 0rem;
+      left: -24rem;
       right: 0rem; } }
+  .sure-message-align {
+    left: 0rem; }
 
 .fill-exist-message {
   position: absolute;
