@@ -411,8 +411,8 @@ def get_preferences(request):
                 'roundTime': preferences.data[0].get("round_time"),
                 'overtime': {
                     'calculateOvertime': preferences.data[0].get("calculate_overtime", True),
-                    'overtimeHours': preferences.data[0].get("overtime_hours", 33),
-                    'overtimeMinutes': preferences.data[0].get("overtime_minutes", 44),
+                    'overtimeHours': preferences.data[0].get("overtime_hours", 8),
+                    'overtimeMinutes': preferences.data[0].get("overtime_minutes", 0),
                 },
                 'rateExist': rate_exist
             }
