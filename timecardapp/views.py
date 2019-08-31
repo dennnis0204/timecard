@@ -36,7 +36,7 @@ class IndexView(ListView):
         obj = Settings.objects.all().get(user=user)
         overtime_norm = overtime_norm + timedelta(seconds=(obj.overtime_hours*3600 + obj.overtime_minutes*60))
 
-        objs = TimeCards.objects.all().filter(user=user)
+        objs = TimeCards.objects.all().filter(entry_date__year = year, entry_date__month = month, user = user)
         for obj in objs:
             entry_date = obj.entry_date
             week_day = calendar.weekday(entry_date.year, entry_date.month, entry_date.day)
