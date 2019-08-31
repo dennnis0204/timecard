@@ -10,5 +10,5 @@ urlpatterns = [
     path('privacy/pl', PrivacyPolish.as_view(), name='privacy'),
     path('privacy/ru', PrivacyRussian.as_view(), name='privacy'),
 
-    path('accounts/social/login/cancelled/$', IndexView.as_view(), name='index'),
+    # path('accounts/social/login/cancelled/', IndexView.as_view(), name='index'),
 ]
