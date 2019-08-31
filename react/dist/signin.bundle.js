@@ -1036,7 +1036,7 @@ eval("__webpack_require__.r(__webpack_exports__);\n/* harmony import */ var redu
 /***/ (function(module, __webpack_exports__, __webpack_require__) {
 
 "use strict";
-eval("__webpack_require__.r(__webpack_exports__);\n/* harmony import */ var redux__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! redux */ \"./node_modules/redux/es/redux.js\");\n/* harmony import */ var redux_thunk__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__(/*! redux-thunk */ \"./node_modules/redux-thunk/es/index.js\");\n/* harmony import */ var _reducers_signin__WEBPACK_IMPORTED_MODULE_2__ = __webpack_require__(/*! ./reducers/signin */ \"./react/src/redux/reducers/signin.js\");\n\n\n\nvar initialState = {};\nvar storeSignin = Object(redux__WEBPACK_IMPORTED_MODULE_0__[\"createStore\"])(_reducers_signin__WEBPACK_IMPORTED_MODULE_2__[\"default\"], initialState, Object(redux__WEBPACK_IMPORTED_MODULE_0__[\"compose\"])(Object(redux__WEBPACK_IMPORTED_MODULE_0__[\"applyMiddleware\"])(redux_thunk__WEBPACK_IMPORTED_MODULE_1__[\"default\"]), window.__REDUX_DEVTOOLS_EXTENSION__ && window.__REDUX_DEVTOOLS_EXTENSION__()));\n/* harmony default export */ __webpack_exports__[\"default\"] = (storeSignin);\n\n//# sourceURL=webpack:///./react/src/redux/storeSignin.js?");
+eval("__webpack_require__.r(__webpack_exports__);\n/* harmony import */ var redux__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! redux */ \"./node_modules/redux/es/redux.js\");\n/* harmony import */ var redux_thunk__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__(/*! redux-thunk */ \"./node_modules/redux-thunk/es/index.js\");\n/* harmony import */ var _reducers_signin__WEBPACK_IMPORTED_MODULE_2__ = __webpack_require__(/*! ./reducers/signin */ \"./react/src/redux/reducers/signin.js\");\n\n\n\nvar initialState = {};\nvar storeSignin = Object(redux__WEBPACK_IMPORTED_MODULE_0__[\"createStore\"])(_reducers_signin__WEBPACK_IMPORTED_MODULE_2__[\"default\"], initialState, Object(redux__WEBPACK_IMPORTED_MODULE_0__[\"compose\"])(Object(redux__WEBPACK_IMPORTED_MODULE_0__[\"applyMiddleware\"])(redux_thunk__WEBPACK_IMPORTED_MODULE_1__[\"default\"]) // window.__REDUX_DEVTOOLS_EXTENSION__ && window.__REDUX_DEVTOOLS_EXTENSION__()\n));\n/* harmony default export */ __webpack_exports__[\"default\"] = (storeSignin);\n\n//# sourceURL=webpack:///./react/src/redux/storeSignin.js?");
 
 /***/ }),
 
@@ -1060,7 +1060,7 @@ eval("__webpack_require__.r(__webpack_exports__);\n/* harmony import */ var reac
 /***/ (function(module, __webpack_exports__, __webpack_require__) {
 
 "use strict";
-eval("__webpack_require__.r(__webpack_exports__);\n/* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, \"logo\", function() { return logo; });\n/* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, \"hostName\", function() { return hostName; });\nvar logo = \"TimeCard\";\nvar hostName = \"http://localhost:8000\"; // export const hostName = \"https://timecard.eu.pythonanywhere.com\";\n\n//# sourceURL=webpack:///./react/src/variables.js?");
+eval("__webpack_require__.r(__webpack_exports__);\n/* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, \"logo\", function() { return logo; });\n/* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, \"hostName\", function() { return hostName; });\nvar logo = \"TimeCard\"; // export const hostName = \"http://localhost:8000\";\n\nvar hostName = \"https://timecard.eu.pythonanywhere.com\";\n\n//# sourceURL=webpack:///./react/src/variables.js?");
 
 /***/ }),
 
