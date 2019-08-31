@@ -1,11 +1,15 @@
 from django.http import JsonResponse
+
 from timecardapp.models import TimeCards, Wages, Settings
 from timecardapp.serializers import TimeCardsSerializer, WagesSerializer, SettingsSerializer
+
 from django.views.generic.list import ListView
 from django.views.generic import TemplateView
+
 from datetime import datetime, date, time, timedelta
 import time as timeX
 import calendar
+
 from django.contrib.auth.models import User
 
 
@@ -24,9 +28,15 @@ class IndexView(ListView):
         total_time = 0
 
         time_at_work = datetime.combine(date.min, time.min)
+        overtime_at_work = datetime.combine(date.min, time.min)
+        one_day_overtime = datetime.combine(date.min, time.min)
+        overtime_norm = datetime.combine(date.min, time.min)
         weekend = datetime.combine(date.min, time.min)
 
-        objs = TimeCards.objects.all().filter(user=user, entry_date__month=month, entry_date__year=year)
+        obj = Settings.objects.all().get(user=user)
+        overtime_norm = overtime_norm + timedelta(seconds=(obj.overtime_hours*3600 + obj.overtime_minutes*60))
+
+        objs = TimeCards.objects.all()
         for obj in objs:
             entry_date = obj.entry_date
             week_day = calendar.weekday(entry_date.year, entry_date.month, entry_date.day)
@@ -36,19 +46,28 @@ class IndexView(ListView):
 
             if (week_day == 5 or week_day == 6):
                 weekend = weekend + timedelta(seconds=(one_day_total_time.hour*3600 + one_day_total_time.minute*60))
-                print("week_day", week_day, weekend)
 
-            # if (duration.seconds//3600 > 8):
-            #     overtime += duration.seconds//3600 - 8
+            # print('overtime_norm < one_day_total_time', overtime_norm, type(overtime_norm), one_day_total_time, type(one_day_total_time))
+            if (overtime_norm < one_day_total_time):
+                one_day_overtime = one_day_total_time - timedelta(seconds=(overtime_norm.hour*3600 + overtime_norm.minute*60))
+                overtime_at_work = overtime_at_work + timedelta(seconds=(one_day_overtime.hour*3600 + one_day_overtime.minute*60))
+                # print('one_overtime', overtime_at_work)
 
             month_pay += obj.pay
 
         total_time_hour = (time_at_work.day - 1) * 24 + time_at_work.hour
         total_time_minute = time_at_work.minute
+
+        overtime_hour = (overtime_at_work.day - 1) * 24 + overtime_at_work.hour
+        overtime_minute = overtime_at_work.minute
+
         weekend_hour = (weekend.day - 1) * 24 + weekend.hour
         weekend_minute = weekend.minute
 
-        return total_time_hour, total_time_minute, overtime, weekend_hour, weekend_minute, month_pay
+        print('time_at_work', time_at_work, type(time_at_work), total_time_hour, total_time_minute)
+        # print('overtime_at_work', overtime_at_work, type(overtime_at_work))
+
+        return total_time_hour, total_time_minute, overtime_hour, overtime_minute, weekend_hour, weekend_minute, month_pay
     
     # def days_hours_minutes(td):
     #     return td.days, td.seconds//3600, (td.seconds//60)%60
@@ -70,13 +89,14 @@ class IndexView(ListView):
         if self.request.user.is_authenticated:
             user = self.request.user
             year, month = self.get_year_month()
-            total_time_hour, total_time_minute, overtime, weekend_hour, weekend_minute, month_pay = self.estimation()
+            total_time_hour, total_time_minute, overtime_hour, overtime_minute, weekend_hour, weekend_minute, month_pay = self.estimation()
             obj = TimeCards.objects.all().filter(entry_date__year = year, entry_date__month = month, user = user)
             table_data = TimeCardsSerializer(obj, many=True)
             response_data = {
                 'totalTimeHour': total_time_hour,
                 'totalTimeMinute': total_time_minute,
-                'overtime': overtime,
+                'overtimeHour': overtime_hour,
+                'overtimeMinute': overtime_minute,
                 'weekendHour': weekend_hour,
                 'weekendMinute': weekend_minute,
                 'monthPay': month_pay,
@@ -86,54 +106,54 @@ class IndexView(ListView):
         else:
             return None
     
-    def get_next_last_month(self, *args, **kwargs):        
-        year, month = self.get_year_month()
-        request_month = date(year = year, month = month, day = 1)
-        last_month = request_month - timedelta(days = 1)
-        next_month = request_month + timedelta(days = 35)
-        return request_month, last_month, next_month
+    # def get_next_last_month(self, *args, **kwargs):        
+    #     year, month = self.get_year_month()
+    #     request_month = date(year = year, month = month, day = 1)
+    #     last_month = request_month - timedelta(days = 1)
+    #     next_month = request_month + timedelta(days = 35)
+    #     return request_month, last_month, next_month
 
-    def get_context_data(self, **kwargs):
-        context = super().get_context_data(**kwargs)
-        if self.request.user.is_authenticated:
-            year, month = self.get_year_month() 
-            request_month, last_month, next_month = self.get_next_last_month()
-            context.update({
-                'year': year,
-                'month': month,
-                'last_month': last_month,
-                'request_month': request_month,
-                'next_month': next_month,
-            })
+    # def get_context_data(self, **kwargs):
+    #     context = super().get_context_data(**kwargs)
+    #     if self.request.user.is_authenticated:
+    #         year, month = self.get_year_month() 
+    #         request_month, last_month, next_month = self.get_next_last_month()
+    #         context.update({
+    #             'year': year,
+    #             'month': month,
+    #             'last_month': last_month,
+    #             'request_month': request_month,
+    #             'next_month': next_month,
+    #         })
 
-            total_time_hour, total_time_minute, overtime, weekend_hour, weekend_minute, month_pay = self.estimation()
-            context.update({
-                'totalTimeHour': total_time_hour,
-                'totalTimeMinute': total_time_minute,
-                'overtime': overtime,
-                'weekendHour': weekend_hour,
-                'weekendMinute': weekend_minute,
-                'monthPay': month_pay,
-            })
+    #         total_time_hour, total_time_minute, overtime, weekend_hour, weekend_minute, month_pay = self.estimation()
+    #         context.update({
+    #             'totalTimeHour': total_time_hour,
+    #             'totalTimeMinute': total_time_minute,
+    #             'overtime': overtime,
+    #             'weekendHour': weekend_hour,
+    #             'weekendMinute': weekend_minute,
+    #             'monthPay': month_pay,
+    #         })
 
-            context['table_data'] = self.get_json()
+    #         context['table_data'] = self.get_json()
 
-        return context
+    #     return context
 
 
-    def get(self, request, *args, **kwargs):
-        # just for test closest_date.wage
-        if self.request.user.is_authenticated:
-            user = self.request.user
-            entry_date = date(2018, 5, 4)
-            closest_date = Wages.objects.all().filter(user=user).filter(increase_date__lte=entry_date).order_by('increase_date').last()
-        return super().get(request, *args, **kwargs)
+    # def get(self, request, *args, **kwargs):
+    #     # just for test closest_date.wage
+    #     if self.request.user.is_authenticated:
+    #         user = self.request.user
+    #         entry_date = date(2018, 5, 4)
+    #         closest_date = Wages.objects.all().filter(user=user).filter(increase_date__lte=entry_date).order_by('increase_date').last()
+    #     return super().get(request, *args, **kwargs)
 
     def post(self, request, *args, **kwargs):
         user = self.request.user
         form = request.POST
         if ('preferences' in form):
-            return JsonResponse(self.get_preferences(), safe=False)
+            return JsonResponse(get_preferences(request), safe=False)
         if ('first_load' in form):
             # timeX.sleep(5)
             return JsonResponse(self.get_json(), safe=False)
@@ -157,7 +177,6 @@ class IndexView(ListView):
             if (time_out < time_in):
                 duration += timedelta(days = 1)
 
-            print((datetime.min + duration).time())
             duration = datetime.combine(date.min, (datetime.min + duration).time()) - datetime.combine(date.min, break_time)
             time_at_work = time(duration.seconds//3600, (duration.seconds//60)%60)
             time_at_work_decimal = duration.seconds / 3600
@@ -185,41 +204,6 @@ class IndexView(ListView):
 
             return JsonResponse(self.get_json(), safe=False)
 
-    def get_preferences(self):
-        if self.request.user.is_authenticated:
-            user = self.request.user
-            obj = Settings.objects.all().filter(user=user)
-            if (not obj):
-                obj = Settings(user=user, break_type="noBreak", break_duration=15, round_time=15, calculate_overtime=True, overtime_hours=8, overtime_minutes=0)
-                obj.save()
-                obj = Settings.objects.all().filter(user=user)
-                print('new_obj=', obj)
-            preferences = SettingsSerializer(obj, many=True)
-            obj2 = Wages.objects.all().filter(user=user)
-            if (not obj2):
-                rate_exist = False
-            else:
-                rate_exist = True
-
-            response_data = {
-                'preferences': {
-                    'break': {
-                        'breakType': preferences.data[0].get("break_type", "noBreak"),
-                        'breakDuration': preferences.data[0].get("break_duration")
-                    },
-                    'roundTime': preferences.data[0].get("round_time"),
-                    'overtime': {
-                        'calculateOvertime': preferences.data[0].get("calculate_overtime", True),
-                        'overtimeHours': preferences.data[0].get("overtime_hours", 33),
-                        'overtimeMinutes': preferences.data[0].get("overtime_minutes", 44),
-                    },
-                    'rateExist': rate_exist
-                }
-            }
-            return response_data
-        else:
-            return None
-
 
 
 
@@ -235,13 +219,13 @@ class Preferences(ListView):
             return JsonResponse(self.get_json(), safe=False)
         if ('break_load' in form):
             print('break_load')
-            return JsonResponse(self.get_preferences(), safe=False)
+            return JsonResponse(get_preferences(request), safe=False)
         if ('round_time_load' in form):
             print('round_time_load')
-            return JsonResponse(self.get_preferences(), safe=False)
+            return JsonResponse(get_preferences(request), safe=False)
         if ('overtime_load' in form):
             print('overtime_load')
-            return JsonResponse(self.get_preferences(), safe=False)
+            return JsonResponse(get_preferences(request), safe=False)
         if ('break_change' in form):
             if self.request.user.is_authenticated:
                 user = self.request.user
@@ -257,7 +241,7 @@ class Preferences(ListView):
                 except (KeyError, Settings.DoesNotExist):
                     new_obj = Settings(break_type=break_type, break_duration=break_duration, user=user)
                     new_obj.save()
-                return JsonResponse(self.get_preferences(), safe=False)
+                return JsonResponse(get_preferences(request), safe=False)
         if ('round_time_change' in form):
             if self.request.user.is_authenticated:
                 user = self.request.user
@@ -269,7 +253,7 @@ class Preferences(ListView):
                 except (KeyError, Settings.DoesNotExist):
                     new_obj = Settings(round_time=round_time, user=user)
                     new_obj.save()
-                return JsonResponse(self.get_preferences(), safe=False)
+                return JsonResponse(get_preferences(request), safe=False)
         if ('overtime_change' in form):
             if self.request.user.is_authenticated:
                 user = self.request.user
@@ -285,7 +269,7 @@ class Preferences(ListView):
                 except (KeyError, Settings.DoesNotExist):
                     new_obj = Settings(calculate_overtime=calculate_overtime, overtime_hours=overtime_hours, overtime_minutes=overtime_minutes)
                     new_obj.save()
-                return JsonResponse(self.get_preferences(), safe=False)
+                return JsonResponse(get_preferences(request), safe=False)
         
         if ('add' in form):
             print('add')
@@ -380,43 +364,6 @@ class Preferences(ListView):
         else:
             return None
 
-    def get_preferences(self):
-        if self.request.user.is_authenticated:
-            user = self.request.user
-            obj = Settings.objects.all().filter(user=user)
-            if (not obj):
-                obj = Settings(user=user, break_type="noBreak", break_duration=15, round_time=15, calculate_overtime=True, overtime_hours=8, overtime_minutes=0)
-                obj.save()
-                obj = Settings.objects.all().filter(user=user)
-                print('new_obj=', obj)
-            preferences = SettingsSerializer(obj, many=True)
-            obj2 = Wages.objects.all().filter(user=user)
-            if (not obj2):
-                rate_exist = False
-            else:
-                rate_exist = True
-
-            print(preferences.data)
-
-            response_data = {
-                'preferences': {
-                    'break': {
-                        'breakType': preferences.data[0].get("break_type", "noBreak"),
-                        'breakDuration': preferences.data[0].get("break_duration")
-                    },
-                    'roundTime': preferences.data[0].get("round_time"),
-                    'overtime': {
-                        'calculateOvertime': preferences.data[0].get("calculate_overtime", True),
-                        'overtimeHours': preferences.data[0].get("overtime_hours", 33),
-                        'overtimeMinutes': preferences.data[0].get("overtime_minutes", 44),
-                    },
-                    'rateExist': rate_exist
-                }
-            }
-            return response_data
-        else:
-            return None
-
 
 class PrivacyEnglish(TemplateView):
     template_name = 'timecardapp/privacy_en.html'
@@ -435,5 +382,43 @@ def convert_trueTrue_falseFalse(input):
         return True
     else:
         raise ValueError("...")
+
+
+
+
+def get_preferences(request):
+    if request.user.is_authenticated:
+        user = request.user
+        obj = Settings.objects.all().filter(user=user)
+        if (not obj):
+            obj = Settings(user=user, break_type="noBreak", break_duration=15, round_time=15, calculate_overtime=True, overtime_hours=8, overtime_minutes=0)
+            obj.save()
+            obj = Settings.objects.all().filter(user=user)
+            print('new_obj=', obj)
+        preferences = SettingsSerializer(obj, many=True)
+        obj2 = Wages.objects.all().filter(user=user)
+        if (not obj2):
+            rate_exist = False
+        else:
+            rate_exist = True
+
+        response_data = {
+            'preferences': {
+                'break': {
+                    'breakType': preferences.data[0].get("break_type", "noBreak"),
+                    'breakDuration': preferences.data[0].get("break_duration")
+                },
+                'roundTime': preferences.data[0].get("round_time"),
+                'overtime': {
+                    'calculateOvertime': preferences.data[0].get("calculate_overtime", True),
+                    'overtimeHours': preferences.data[0].get("overtime_hours", 33),
+                    'overtimeMinutes': preferences.data[0].get("overtime_minutes", 44),
+                },
+                'rateExist': rate_exist
+            }
+        }
+        return response_data
+    else:
+        return None
     
     

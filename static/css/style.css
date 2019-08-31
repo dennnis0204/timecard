@@ -66,7 +66,7 @@ body {
       width: 80%; } }
   @media only screen and (max-width: 47em) {
     .editor {
-      width: 95%; } }
+      width: 100%; } }
 
 .table {
   width: 60%;
@@ -101,10 +101,15 @@ body {
   .table td {
     font-size: 1.4rem;
     letter-spacing: 1px; }
+    @media only screen and (max-width: 47em) {
+      .table td {
+        padding: 1rem 0;
+        font-size: 1.2rem; } }
   .table .trash {
     cursor: pointer;
     width: 2rem;
-    height: 2rem; }
+    height: 2rem;
+    fill: #f44336; }
 
 .thead th {
   font-weight: 600;
@@ -210,17 +215,20 @@ body {
   display: flex; }
   .estimation > * {
     margin: 1rem; }
+    @media only screen and (max-width: 62em) {
+      .estimation > * {
+        margin: .5rem; } }
   .estimation__icon {
     height: 2rem;
     width: 2rem; }
     .estimation__icon--1 {
       fill: white; }
     .estimation__icon--2 {
-      fill: #3e2723; }
+      fill: #78909c; }
     .estimation__icon--3 {
-      fill: #d50000; }
+      fill: #f44336; }
     .estimation__icon--4 {
-      fill: #1b5e20; }
+      fill: #c6ff00; }
   .estimation__name span {
     margin-right: .5rem; }
   @media only screen and (max-width: 62em) {
@@ -242,7 +250,8 @@ body {
     letter-spacing: 1px; }
     @media only screen and (max-width: 47em) {
       .estimation__value {
-        margin: 0 .2rem; } }
+        margin: 0 .2rem;
+        font-size: 1.3rem; } }
   .estimation__description {
     position: absolute;
     top: 2rem;
@@ -276,9 +285,6 @@ body {
   height: 3rem;
   display: flex;
   justify-content: space-around; }
-  @media only screen and (max-width: 47em) {
-    .month-picker {
-      width: 100%; } }
   .month-picker__item {
     display: flex;
     align-items: center; }
@@ -300,6 +306,9 @@ body {
   .month-picker__text--current {
     padding: 0 .5rem;
     font-size: 1.8rem; }
+    @media only screen and (max-width: 47em) {
+      .month-picker__text--current {
+        font-size: 1.4rem; } }
     .month-picker__text--current-month, .month-picker__text--current-year {
       font-weight: 500; }
   .month-picker__number {
@@ -327,9 +336,9 @@ body {
   .button--blue:hover {
     background-color: #0069d9; }
   .button--red {
-    background-color: #dc3545; }
+    background-color: #db2828; }
   .button--red:hover, .button--red:active {
-    background-color: #c82333; }
+    background-color: #d01919; }
   .button--green {
     background-color: #28a745; }
   .button--green:hover, .button--green:active {
@@ -1141,10 +1150,9 @@ body {
   min-height: 15rem;
   padding: 1rem 1rem;
   margin: 1rem auto;
-  background-color: #fcf8e3;
-  border: 2px solid red;
+  background-color: #ffe8e6;
+  box-shadow: 0 0 0 1px #db2828 inset,0 0 0 0 transparent;
   border-radius: 2px;
-  box-shadow: 0 1px 4px 0 rgba(34, 36, 38, 0.65);
   text-align: center;
   font-weight: 400; }
   .sure-message__text {
@@ -1171,10 +1179,10 @@ body {
   min-height: 15rem;
   padding: 3rem 1rem;
   margin: 1rem auto;
-  background-color: #fdef96;
+  background-color: #fff8db;
   z-index: 1;
-  border: 2px solid #ffb74d;
   border-radius: .4rem;
+  box-shadow: 0 0 0 1px #b58105 inset,0 0 0 0 transparent;
   text-align: center; }
   .fill-exist-message__text {
     display: block;
