@@ -435,7 +435,11 @@ body {
   text-align: center;
   font-size: 1.4rem;
   box-shadow: 0 1px 4px 0 rgba(34, 36, 38, 0.65);
-  border: solid 1px #ffb74d; }
+  border: solid 1px #ffb74d;
+  padding-top: 3rem; }
+  @media only screen and (max-width: 47em) {
+    .sign-in {
+      padding-top: 0rem; } }
   .sign-in__link {
     display: block; }
   .sign-in__text {
