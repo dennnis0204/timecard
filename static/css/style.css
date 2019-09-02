@@ -792,7 +792,7 @@ body {
     .wage-del {
       grid-template-columns: 8rem 15rem;
       grid-template-rows: 5rem 8rem;
-      width: 32rem; }
+      width: 30rem; }
       .wage-del__buttons {
         grid-column-start: 1;
         grid-column-end: 3;
@@ -1167,12 +1167,13 @@ body {
     justify-content: space-around; }
   @media only screen and (max-width: 47em) {
     .sure-message {
-      width: 30rem;
+      width: 28rem;
       top: -7rem;
       left: -24rem;
       right: 0rem; } }
   .sure-message-align {
-    left: 0rem; }
+    left: 0rem;
+    right: 0rem; }
 
 .fill-exist-message {
   position: absolute;
