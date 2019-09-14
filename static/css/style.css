@@ -17,10 +17,13 @@ body {
   height: 100%; }
 
 .selected--red {
-  background-color: #dc3545; }
+  background-color: #db2828; }
 
 .selected--green {
-  background-color: #28a745; }
+  background-color: #ccff90; }
+
+.selected--orange {
+  background-color: #ffb74d; }
 
 .header {
   display: grid;
@@ -502,10 +505,11 @@ body {
 
 .date-picker {
   position: absolute;
-  top: -7rem;
+  top: 0rem;
+  left: 0rem;
+  right: 0rem;
   margin: 0 auto;
   z-index: 1;
-  margin: auto;
   width: 31rem;
   background-color: white;
   box-shadow: 0 1px 2px 0 rgba(34, 36, 38, 0.65);
@@ -537,6 +541,14 @@ body {
     width: 2rem;
     height: 2rem;
     cursor: pointer; }
+    .date-picker__icon--small {
+      width: 1.5rem;
+      height: 1.5rem;
+      cursor: pointer; }
+    .date-picker__icon--large {
+      width: 2.5rem;
+      height: 2.5rem;
+      cursor: pointer; }
 
 .wage-date-card {
   display: flex;
@@ -729,7 +741,7 @@ body {
 .wage-date {
   position: relative;
   display: grid;
-  grid-template-columns: 5rem 12rem 5rem 16rem 22rem;
+  grid-template-columns: 5rem 9rem 5rem 14rem 22rem;
   grid-template-rows: 12rem;
   justify-content: center;
   place-items: center;
@@ -744,8 +756,7 @@ body {
   @media only screen and (max-width: 47em) {
     .wage-date {
       grid-template-columns: 8rem 15rem;
-      grid-template-rows: 5rem 3rem 8rem;
-      width: 32rem; }
+      grid-template-rows: 5rem 3rem 8rem; }
       .wage-date__buttons {
         grid-column-start: 1;
         grid-column-end: 3;
@@ -755,7 +766,8 @@ body {
         justify-content: space-between;
         width: 20rem; } }
   .wage-date__date {
-    cursor: pointer; }
+    cursor: pointer;
+    font-weight: 300; }
   .wage-date__wage {
     display: grid;
     grid-template-columns: repeat(2, 2rem) 6rem repeat(2, 2rem);
@@ -770,7 +782,82 @@ body {
   .wage-date__chevrons--down {
     grid-area: chevrons--down; }
   .wage-date__value {
-    grid-area: value; }
+    grid-area: value;
+    font-weight: 300; }
+
+.wage-date-new {
+  position: relative;
+  display: grid;
+  grid-template-columns: 3fr 4fr;
+  grid-template-rows: min-content min-content;
+  grid-template-areas: "dateX rateX" "buttonsX buttonsX";
+  width: 100%;
+  margin: 2rem auto;
+  padding: 2rem;
+  box-shadow: 0px 1px 2px 0 rgba(34, 36, 38, 0.15);
+  border: 1px solid rgba(34, 36, 38, 0.15); }
+  @media only screen and (max-width: 47em) {
+    .wage-date-new {
+      padding: 1rem;
+      grid-template-rows: auto auto auto;
+      grid-template-areas: "dateX dateX" "rateX rateX" "buttonsX buttonsX"; } }
+  .wage-date-new__date, .wage-date-new__rate, .wage-date-new__buttons {
+    text-align: center;
+    padding: 1rem;
+    display: flex;
+    align-items: center; }
+  .wage-date-new__date {
+    grid-area: dateX;
+    justify-content: center; }
+    .wage-date-new__date-label {
+      margin-right: 1rem; }
+    .wage-date-new__date-select {
+      cursor: pointer;
+      padding: 1rem;
+      width: 12rem;
+      background-color: #ffb74d; }
+  .wage-date-new__rate {
+    grid-area: rateX;
+    justify-content: center; }
+    .wage-date-new__rate-label {
+      margin-right: 1rem; }
+    .wage-date-new__rate-select {
+      display: flex;
+      align-items: center; }
+  .wage-date-new__buttons {
+    grid-area: buttonsX;
+    justify-content: center;
+    width: 50%;
+    margin: 0 auto; }
+    @media only screen and (max-width: 47em) {
+      .wage-date-new__buttons {
+        width: 100%;
+        padding: .5rem; } }
+  .wage-date-new__chevrons--left {
+    width: 2.5rem;
+    height: 2.5rem; }
+  .wage-date-new__chevron--left {
+    width: 1.5rem;
+    height: 1.5rem; }
+  .wage-date-new__chevron--right {
+    width: 1.5rem;
+    height: 1.5rem; }
+  .wage-date-new__chevrons--right {
+    width: 2.5rem;
+    height: 2.5rem; }
+  .wage-date-new__chevrons--left, .wage-date-new__chevron--left, .wage-date-new__chevron--right, .wage-date-new__chevrons--right {
+    margin: 0 1rem; }
+    @media only screen and (max-width: 47em) {
+      .wage-date-new__chevrons--left, .wage-date-new__chevron--left, .wage-date-new__chevron--right, .wage-date-new__chevrons--right {
+        margin: 0 .5rem; } }
+  .wage-date-new__value {
+    width: 5rem;
+    margin: 0 2rem;
+    padding: 1rem;
+    background-color: #ffb74d; }
+    @media only screen and (max-width: 47em) {
+      .wage-date-new__value {
+        margin: 0 1rem; } }
 
 .wage-del {
   position: relative;
@@ -798,6 +885,47 @@ body {
         grid-column-end: 3;
         grid-row-start: 2;
         grid-row-end: 3; } }
+
+.wage-del-new {
+  position: relative;
+  display: grid;
+  grid-template-columns: 3fr 5fr;
+  grid-template-rows: min-content min-content;
+  grid-template-areas: "dateX buttonsX";
+  width: 100%;
+  margin: 2rem auto;
+  padding: 2rem;
+  box-shadow: 0px 1px 2px 0 rgba(34, 36, 38, 0.15);
+  border: 1px solid rgba(34, 36, 38, 0.15); }
+  @media only screen and (max-width: 47em) {
+    .wage-del-new {
+      padding: .5rem;
+      grid-template-rows: auto auto;
+      grid-template-areas: "dateX dateX" "buttonsX buttonsX"; } }
+  .wage-del-new__date, .wage-del-new__buttons {
+    text-align: center;
+    padding: 1rem;
+    display: flex;
+    align-items: center; }
+  .wage-del-new__date {
+    grid-area: dateX;
+    justify-content: center; }
+    .wage-del-new__date-label {
+      margin-right: 1rem; }
+    .wage-del-new__date-select {
+      cursor: pointer;
+      padding: 1rem; }
+  .wage-del-new__buttons {
+    grid-area: buttonsX;
+    justify-content: center; }
+    .wage-del-new__buttons > * {
+      margin: 0; }
+    .wage-del-new__buttons button:first-child {
+      margin-right: 2rem; }
+    @media only screen and (max-width: 47em) {
+      .wage-del-new__buttons {
+        width: 100%;
+        padding: 1rem; } }
 
 .wage-table {
   width: 100%;

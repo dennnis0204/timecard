@@ -25,7 +25,7 @@ SECRET_KEY = 'hpctgvw8sx0z4=u2&4*poig5pqi-ti0v0=kj1hs)7u7vej16ik'
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = True
 
-ALLOWED_HOSTS = ['pythonanywhere.com']
+ALLOWED_HOSTS = ['timecard.eu.pythonanywhere.com']
 
 
 # Application definition
@@ -137,6 +137,8 @@ STATICFILES_DIRS = [
     os.path.join(BASE_DIR, "react"),
     os.path.join(BASE_DIR, "static")
 ]
+
+STATIC_ROOT = os.path.join(BASE_DIR, 'static')
 
 AUTHENTICATION_BACKENDS = (
     # Needed to login by username in Django admin, regardless of `allauth`
