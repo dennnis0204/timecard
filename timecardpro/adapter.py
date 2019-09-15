@@ -12,20 +12,20 @@ from django.conf import settings
 import json
 
 
-# class MyLoginAccountAdapter(DefaultAccountAdapter):
-#     '''
-#     Overrides allauth.account.adapter.DefaultAccountAdapter.ajax_response to avoid changing
-#     the HTTP status_code to 400
-#     '''
+class MyLoginAccountAdapter(DefaultAccountAdapter):
+    '''
+    Overrides allauth.account.adapter.DefaultAccountAdapter.ajax_response to avoid changing
+    the HTTP status_code to 400
+    '''
 
-#     def get_login_redirect_url(self, request):
-#         """ 
-#         """
-#         if request.user.is_authenticated():
-#             return settings.LOGIN_REDIRECT_URL.format(
-#                 id=request.user.id)
-#         else:
-#             return "/"
+    def get_login_redirect_url(self, request):
+        """ 
+        """
+        if request.user.is_authenticated():
+            return settings.LOGIN_REDIRECT_URL.format(
+                id=request.user.id)
+        else:
+            return "/"
 
 
 class MySocialAccountAdapter(DefaultSocialAccountAdapter):
