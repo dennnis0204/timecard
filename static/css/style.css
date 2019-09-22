@@ -28,6 +28,7 @@ body {
 .header {
   display: grid;
   grid-template-columns: minmax(max-content, 1fr) 4fr 1fr max-content;
+  grid-template-rows: 5rem;
   align-items: center;
   justify-items: center;
   grid-template-areas: "logo estimation login menu";
@@ -40,7 +41,7 @@ body {
   @media only screen and (max-width: 47em) {
     .header {
       grid-template-columns: 3fr 1fr;
-      grid-template-rows: 6rem auto;
+      grid-template-rows: 5rem auto;
       grid-template-areas: "logo menu" "estimation estimation" "login preferences"; } }
 
 .header-signin {
@@ -48,12 +49,8 @@ body {
   grid-template-areas: "logo language"; }
 
 .header-pref {
-  display: grid;
-  grid-template-columns: 15rem;
-  align-items: center;
-  min-height: 5rem;
-  background-color: #ffb74d;
-  color: white; }
+  grid-template-columns: minmax(max-content, 1fr) min-content min-content;
+  grid-template-areas: "logo home language"; }
 
 .editor {
   width: 60%;
@@ -166,7 +163,7 @@ body {
     .footer {
       flex-direction: column; } }
 
-.sign-in-app, .App {
+.sign-in-app, .App, .pref-app {
   min-height: 100%;
   display: grid;
   grid-template-rows: 5rem auto 5rem; }
@@ -201,6 +198,17 @@ body {
 .logo {
   grid-area: logo;
   justify-self: start; }
+
+.home {
+  font-weight: 600;
+  position: relative; }
+  .home a {
+    cursor: pointer; }
+  .home__icon {
+    height: 3rem;
+    width: 3rem;
+    fill: white;
+    cursor: pointer; }
 
 .login {
   padding: 1rem 1rem;
@@ -637,6 +645,7 @@ body {
     top: 6rem;
     left: -6rem;
     background-color: white;
+    z-index: 1;
     padding: 2rem;
     box-shadow: 0 1px 4px 0 rgba(34, 36, 38, 0.2); }
   .language__item {
