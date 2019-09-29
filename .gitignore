@@ -19,8 +19,5 @@ Pipfile
 Pipfile.lock
 README.md
 
-*.woff
-*.woff2
-
 settings.py
 settings2.py
