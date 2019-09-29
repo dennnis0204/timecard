@@ -1,4 +1,5 @@
 {% load static %}
+{% load render_bundle from webpack_loader %}
 
 <!DOCTYPE html>
 <html lang="en">
@@ -13,32 +14,23 @@
 </head>
 
 <body>
-  <!-- <div class="header">
-    <div class="logo">
-      <a href="/" class="logo__link">TimeCard</a>
-    </div>
-  </div> -->
   <div id="root"></div>
-
-  <!-- <div class="pref-wrapper">
-    <div class="working-hours-new">
-      working-hours
-    </div>
-  </div> -->
-
-    <noscript>
-      You need to enable JavaScript to run this app.
-    </noscript>
-    <script>
-      window.__initialData__ = [
-        {
-          "user": '{{user}}',
-        }
-      ]
+  <noscript>
+    You need to enable JavaScript to run this app.
+  </noscript>
+  <script>
+    window.__initialData__ = [
+      {
+        "user": '{{user}}',
+      }
+    ]
     </script>
-  <script src="{% static '/dist/vendor.00dd4f9dc73e08a3d996.js' %}"></script>
-  <script src="{% static '/dist/preferences.12912400fcf02e18451c.js' %}"></script>
+  <!-- <script src="{% static '/dist/vendor.00dd4f9dc73e08a3d996.js' %}"></script> -->
+  <!-- <script src="{% static '/dist/preferences.12912400fcf02e18451c.js' %}"></script> -->
   <!-- <script src="{% static '/dist/preferences.bundle.js' %}"></script> -->
+  {% render_bundle 'vendor' %}
+	{% render_bundle 'vendor2' %}
+  {% render_bundle 'preferences' %}
 
 </body>
 </html>

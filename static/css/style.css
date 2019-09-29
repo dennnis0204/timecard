@@ -607,6 +607,7 @@ body {
   align-items: center;
   padding: 1rem;
   line-height: 3rem;
+  width: 100%;
   background-color: #ffdd59; }
   .cookie-btn {
     margin: 0; }

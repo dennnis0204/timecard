@@ -1,4 +1,5 @@
 {% load static %}
+{% load render_bundle from webpack_loader %}
 
 <!DOCTYPE html>
 <html lang="en">
@@ -25,9 +26,13 @@
 			}
 		]
 	</script>
-	<script src="{% static '/dist/vendor.00dd4f9dc73e08a3d996.js' %}"></script>
-	<script src="{% static '/dist/index.e68b149909776f1b04da.js' %}"></script>
+	<!-- <script src="{% static '/dist/vendor.19c359b772b0378d85d2.bundle.js' %}"></script> -->
+	<!-- <script src="{% static '/dist/vendor2.addcfd10e5b05114a750.bundle.js' %}"></script> -->
+	<!-- <script src="{% static '/dist/index.83a086129339e2629781.bundle.js' %}"></script> -->
 	<!-- <script src="{% static '/dist/index.bundle.js' %}"></script> -->
+	{% render_bundle 'vendor' %}
+	{% render_bundle 'vendor2' %}
+	{% render_bundle 'index' %}
 </body>
 </html>
 

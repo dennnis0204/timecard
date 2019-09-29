@@ -8,9 +8,13 @@ npm-debug.log
 /react/src
 /static/sass
 .babelrc
-*.json
+package.json
+package-lock.json
 *.hot-update.js
 webpack.config.js
+webpack.common.js
+webpack.dev.js
+webpack.prod.js
 Pipfile
 Pipfile.lock
 README.md
