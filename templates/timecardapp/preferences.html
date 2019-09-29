@@ -8,7 +8,7 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <meta http-equiv="X-UA-Compatible" content="ie=edge">
     <link href="https://fonts.googleapis.com/css?family=Montserrat:300,300i,400,400i,500,500i,600,600i,700&display=swap&subset=cyrillic-ext" rel="stylesheet"> 
-    <link rel="stylesheet" href="{% static '/css/style.css' %}">
+    {% render_bundle 'style' 'css' %}
 	  <link rel="icon" href="{% static '/img/icons8-schedule-48.png'%}">
     <title>TimeCard Preferences</title>
 </head>
@@ -25,12 +25,9 @@
       }
     ]
     </script>
-  <!-- <script src="{% static '/dist/vendor.00dd4f9dc73e08a3d996.js' %}"></script> -->
-  <!-- <script src="{% static '/dist/preferences.12912400fcf02e18451c.js' %}"></script> -->
-  <!-- <script src="{% static '/dist/preferences.bundle.js' %}"></script> -->
-  {% render_bundle 'vendor' %}
-	{% render_bundle 'vendor2' %}
-  {% render_bundle 'preferences' %}
+  {% render_bundle 'vendor' 'js' %}
+	{% render_bundle 'vendor2' 'js' %}
+  {% render_bundle 'preferences' 'js' %}
 
 </body>
 </html>
