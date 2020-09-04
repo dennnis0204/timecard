@@ -18,7 +18,7 @@ class IndexView(ListView):
     default_year = date.today().year
     default_month = date.today().month
     model = TimeCards
-    template_name = 'timecardapp/index.html'
+    # template_name = 'timecardapp/index.html'
 
     def estimation(self, *args, **kwargs):
         user = self.request.user
@@ -141,13 +141,14 @@ class IndexView(ListView):
     #     return context
 
 
-    # def get(self, request, *args, **kwargs):
-    #     # just for test closest_date.wage
-    #     if self.request.user.is_authenticated:
-    #         user = self.request.user
-    #         entry_date = date(2018, 5, 4)
-    #         closest_date = Wages.objects.all().filter(user=user).filter(increase_date__lte=entry_date).order_by('increase_date').last()
-    #     return super().get(request, *args, **kwargs)
+    def get(self, request, *args, **kwargs):
+        print(request.COOKIES);
+        # just for test closest_date.wage
+        # if self.request.user.is_authenticated:
+        #     user = self.request.user
+        #     entry_date = date(2018, 5, 4)
+        #     closest_date = Wages.objects.all().filter(user=user).filter(increase_date__lte=entry_date).order_by('increase_date').last()
+        return super().get(request, *args, **kwargs)
 
     def post(self, request, *args, **kwargs):
         user = self.request.user
